@@ -1,17 +1,16 @@
 {
-  "name": "vpay",
+  "name": "telegram",
   "version": "1.0.0",
-  "description": "",
-  "main": "epns.js",
+  "description": "telegram bot for vpay",
+  "main": "telegram_bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pushprotocol/restapi": "^0.2.2",
-    "axios": "^1.2.0",
+    "axios": "^0.21.1",
     "dotenv": "^16.0.3",
-    "ethers": "^5.7.2"
+    "telegraf": "^4.3.0"
   }
 }
