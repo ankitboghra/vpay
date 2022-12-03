@@ -27,7 +27,7 @@ bot.command('pay', async (ctx) => {
     try {
         const msgArray = msg.split(' ')
         const requestedUser = msgArray[1].substr(1) // @codeswim -> codeswim
-        // const amount = msgArray[2]
+        const amount = msgArray[2]
 
         if (requestedUser in storedAddresses) {
             const relatedAddress = storedAddresses[requestedUser]
@@ -61,7 +61,12 @@ bot.command('pay', async (ctx) => {
                     env: 'staging'
                 });
 
-                console.log('API repsonse: ', apiResponse);
+                // console.log('API repsonse: ', apiResponse);
+
+                const chainId = 5
+                const metamaskLink = `https://metamask.app.link/send/pay-${relatedAddress}@${chainId}?value=${amount}e18`
+                ctx.replyWithHTML(`To continue with the payment please click on this link: ${metamaskLink}`)
+
             } catch (err) {
                 console.error('Error: ', err);
             }
