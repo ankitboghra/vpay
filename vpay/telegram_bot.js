@@ -17,7 +17,7 @@ bot.start((ctx) => {
 })
 
 bot.hears('hello', (ctx) => {
-    ctx.reply('Hello! Welcome to VPay')
+    ctx.reply('Hey there, welcome to vPay!')
 })
 
 bot.command('pay', async (ctx) => {
@@ -34,11 +34,11 @@ bot.command('pay', async (ctx) => {
             const pushFormattedReceiverAddress = `eip155:5:${relatedAddress}`
             const duneFormattedUrl = `https://dune.com/nccb/ETH-Address?1.+Eth+Address_t82ee2=${relatedAddress}`
 
-            const outputString = `The current address registered with user <b>${requestedUser}</b> is:`
+            const outputString = `The current address linked with <b>${requestedUser}</b> is:`
             ctx.replyWithHTML(outputString)
             ctx.replyWithHTML(`<i>${relatedAddress}</i>`)
-            ctx.replyWithHTML(`Expected OTP: ${otp}`)
-            ctx.replyWithHTML(`If they are not responding with OTP, feel free to visit their account history at ${duneFormattedUrl}`)
+            ctx.replyWithHTML(`vPay has notified ${requestedUser} on their wallet address and they should respond back to you shortly on Telegram with the confirmation code: ${otp}`)
+            ctx.replyWithHTML(`Meanwhile, checkout their account history and stats at ${duneFormattedUrl}`)
 
             try {
                 // send EPNS push notification to receiver
@@ -47,14 +47,14 @@ bot.command('pay', async (ctx) => {
                     type: 3, // target
                     identityType: 2, // direct payload
                     notification: {
-                        title: `[SDK-TEST] notification TITLE:`,
-                        body: `Please enter the OTP ${otp}`
+                        title: `vPay: Confirm Wallet Address`,
+                        body: `Your friend has requested confirmation of this wallet address. Respond with verification code: ${otp}`
                     },
                     payload: {
-                        title: `[sdk-test] payload title`,
-                        body: `sample msg body`,
+                        title: `vPay: Confirm Wallet Address`,
+                        body: `Your friend has requested confirmation of this wallet address. Respond with verification code: ${otp}`,
                         cta: `https://t.me/${requestedUser}`,
-                        img: ''
+                        img: 'https://dynamic.brandcrowd.com/preview/logodraft/6dd9e226-2497-41ae-a329-a38985bcdfc0/image/large.png'
                     },
                     recipients: pushFormattedReceiverAddress, // recipient address
                     channel: process.env.EPNS_CHANNEL_ID, // your channel address
@@ -71,20 +71,20 @@ bot.command('pay', async (ctx) => {
                 console.error('Error: ', err);
             }
         } else {
-            const outputString = `${requestedUser} is not registered with us, please verify the address once. We have pinged ${requestedUser} to register with us.`
+            const outputString = `${requestedUser} hasn't linked their wallet address. We have pinged ${requestedUser} to link it.`
             ctx.replyWithHTML(outputString)
         }
     } catch (e) {
-        ctx.replyWithHTML('<b>Oops!</b> \n\n Something went wrong')
+        ctx.replyWithHTML('<b>Oops!</b> \n\nSomething went wrong')
     }
 })
 
 bot.help((ctx) => {
-    ctx.replyWithHTML('<b>Welcome to VPay!!!</b> \n\nUse /pay <b>@receiverHandle amount</b>')
+    ctx.replyWithHTML('<b>Welcome to vPay!</b> \n\nUsage: /pay <b>@receiverHandle amount eth</b>')
 })
 
 bot.use((ctx) => {
-    ctx.replyWithHTML("<b>Invalid Command!!</b> \n\nUse /help");
+    ctx.replyWithHTML("<b>Invalid Command!</b> \n\nUse /help");
 })
 
 bot.launch()
