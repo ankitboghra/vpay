@@ -23,6 +23,7 @@ bot.hears('hello', (ctx) => {
 bot.command('pay', async (ctx) => {
     const msg = ctx.message.text;
     const otp = Math.floor(1000 + Math.random() * 9000)
+    const currentUserName = ctx.message.from.username;
 
     try {
         const msgArray = msg.split(' ')
@@ -34,11 +35,14 @@ bot.command('pay', async (ctx) => {
             const pushFormattedReceiverAddress = `eip155:5:${relatedAddress}`
             const duneFormattedUrl = `https://dune.com/nccb/ETH-Address?1.+Eth+Address_t82ee2=${relatedAddress}`
 
-            const outputString = `The current address linked with <b>${requestedUser}</b> is:`
-            ctx.replyWithHTML(outputString)
-            ctx.replyWithHTML(`<i>${relatedAddress}</i>`)
-            ctx.replyWithHTML(`vPay has notified ${requestedUser} on their wallet address and they should respond back to you shortly on Telegram with the confirmation code: ${otp}`)
-            ctx.replyWithHTML(`Meanwhile, checkout their account history and stats at ${duneFormattedUrl}`)
+            const a = async () => {
+                const outputString = `The current address linked with <b>${requestedUser}</b> is:`
+                await ctx.replyWithHTML(outputString)
+                await ctx.replyWithHTML(`<i>${relatedAddress}</i>`)
+                await ctx.replyWithHTML(`vPay has notified ${requestedUser} on their wallet address and they should respond back to you shortly on Telegram with the confirmation code: ${otp}`)
+                await ctx.replyWithHTML(`Meanwhile, checkout their account history and stats at ${duneFormattedUrl}`)
+            }
+            await a()
 
             try {
                 // send EPNS push notification to receiver
@@ -53,7 +57,7 @@ bot.command('pay', async (ctx) => {
                     payload: {
                         title: `vPay: Confirm Wallet Address`,
                         body: `Your friend has requested confirmation of this wallet address. Respond with verification code: ${otp}`,
-                        cta: `https://t.me/${requestedUser}`,
+                        cta: `https://t.me/${currentUserName}`,
                         img: 'https://dynamic.brandcrowd.com/preview/logodraft/6dd9e226-2497-41ae-a329-a38985bcdfc0/image/large.png'
                     },
                     recipients: pushFormattedReceiverAddress, // recipient address
@@ -65,7 +69,7 @@ bot.command('pay', async (ctx) => {
 
                 const chainId = 5
                 const metamaskLink = `https://metamask.app.link/send/pay-${relatedAddress}@${chainId}?value=${amount}e18`
-                ctx.replyWithHTML(`To continue with the payment please click on this link: ${metamaskLink}`)
+                await ctx.replyWithHTML(`To continue with the payment please click on this link: ${metamaskLink}`)
 
             } catch (err) {
                 console.error('Error: ', err);
